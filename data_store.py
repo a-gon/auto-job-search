@@ -28,20 +28,23 @@ def create_table(conn, create_table_sql):
 
 
 def create_db():
-    sql_create_acceptedJobs_table = """ CREATE TABLE IF NOT EXISTS acceptedJobs (
+    sql_create_acceptedJobs_table = """ 
+                                        CREATE TABLE IF NOT EXISTS acceptedJobs (
                                         hash text PRIMARY KEY,
                                         date_posted text,
                                         title text,
                                         company text,
                                         location text,
                                         level text,
-                                        description text
+                                        description text,
+                                        link text
 
                                     ); """
-    sql_create_notacceptedJobs_table = """ CREATE TABLE IF NOT EXISTS notacceptedJobs (
-                                        hash text PRIMARY KEY,
-                                        date_posted text
-                                    ); """
+    sql_create_notacceptedJobs_table = """  
+                                            CREATE TABLE IF NOT EXISTS notacceptedJobs (
+                                            hash text PRIMARY KEY,
+                                            date_posted text
+                                        ); """
     
     conn = create_connection('visited_jobs.db')
     if conn is not None:
@@ -56,8 +59,8 @@ def create_db():
 
 def insert_accepted_job(job):
     conn = create_connection('visited_jobs.db')
-    sql = ''' INSERT INTO acceptedJobs(hash, date_posted, title, company, location, level, description)
-              VALUES(?,?,?,?,?,?,?) '''
+    sql = ''' INSERT INTO acceptedJobs(hash, date_posted, title, company, location, level, description, link)
+              VALUES(?,?,?,?,?,?,?,?) '''
     with conn:
         cur = conn.cursor()
         cur.execute(sql, job)
@@ -66,7 +69,7 @@ def insert_accepted_job(job):
 
 def insert_notaccepted_job(job):
     conn = create_connection('visited_jobs.db')
-    sql = ''' INSERT INTO projects(hash, date_posted)
+    sql = ''' INSERT INTO notacceptedJobs(hash, date_posted)
               VALUES(?,?) '''
     with conn:
         cur = conn.cursor()
@@ -88,9 +91,22 @@ def to_csv(table_name):
         table = pd.read_sql_query('SELECT * from ' + table_name, db)
         table.to_csv(table_name + '.csv', index_label='index')
 
+def drop_tables():
+    conn = create_connection('visited_jobs.db')
+    with conn:
+        sql1 = '''DROP TABLE IF EXISTS acceptedJobs'''
+        sql2 = '''DROP TABLE IF EXISTS notacceptedJobs'''
+        cur = conn.cursor()
+        cur.execute(sql1)
+        cur.execute(sql2)
+        conn.commit()
+    print('Dropped tables')
+
 
 if __name__ == '__main__':
-    # create_db()
+    drop_tables()
+    create_db()
     print_table('acceptedJobs')
     # to_csv('acceptedJobs')
-    # insert_accepted_job(('123aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla'))
+    insert_accepted_job(('123aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink'))
+    print_table('acceptedJobs')

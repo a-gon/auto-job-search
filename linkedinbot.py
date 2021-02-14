@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
 from time import sleep
 from time import time
 start_time = time()
@@ -18,7 +19,10 @@ no_of_jobs = 25
 # getVars = {'f_E' : '2', 'f_TPR' : 'r86400', 'geoId': '102095887', 'keywords' : job_title, 'location' : location, 'sortBy': 'DD'}
 # url = ('https://www.linkedin.com/jobs/search/?' + urllib.parse.urlencode(getVars))
 # print("url: ", url)
-driver = webdriver.Chrome('/Users/anna/projects-sept2020/linkedin-bot/chromedriver')
+options = Options()
+options.add_argument("user-data-dir=/tmp/anna")
+# driver = webdriver.Chrome(options=options)
+driver = webdriver.Chrome(executable_path='/Users/anna/projects-sept2020/linkedin-bot/chromedriver')
 driver.get(url)
 # sleep(3)
 # action = ActionChains(driver)
@@ -63,6 +67,6 @@ pageSource = driver.page_source
 lxml_soup = BeautifulSoup(pageSource, 'lxml')
 
 job_container = lxml_soup.find('ul', class_ = 'jobs-search__results-list')
-print('Job postings found: {}', len(job_container))
+print('Job postings found:', len(job_container))
 
 cd.collect_data(driver, job_container)

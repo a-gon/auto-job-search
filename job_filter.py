@@ -1,5 +1,5 @@
 def accepted_title(title):
-    unaccepted = {'staff', 'senior', 'test', 'fullstack', 'full stack', 'webdev', 'web dev', 'web developer', 'front end', 'frontend', 'analyst', 'embedded', 'lead', 'hardware', 'principal', 'sr.'}
+    unaccepted = {'staff', 'senior', 'test', 'fullstack', 'full stack', 'webdev', 'web dev', 'web developer', 'front end', 'frontend', 'analyst', 'embedded', 'lead', 'hardware', 'principal', 'sr.', 'c++', 'ruby', 'java'}
     accepted = {'software engineer', 'software developer', 'swe', 'junior developer', 'developer', 'software', 'engineer',
     'software development engineer', 'machine learning', 'ml engineer', 'backend engineer', 'new grad', 'recent'}
     for t in unaccepted:
@@ -10,7 +10,7 @@ def accepted_title(title):
             return True
     return False
 
-def acceted_level(level):
+def accepted_level(level):
     if not level:
         return True
     unaccepted = {'senior', 'mid-senior', 'director'}
