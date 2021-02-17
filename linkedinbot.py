@@ -20,18 +20,10 @@ no_of_jobs = 25
 # url = ('https://www.linkedin.com/jobs/search/?' + urllib.parse.urlencode(getVars))
 # print("url: ", url)
 options = Options()
-options.add_argument("user-data-dir=/tmp/anna")
-# driver = webdriver.Chrome(options=options)
-driver = webdriver.Chrome(executable_path='/Users/anna/projects-sept2020/linkedin-bot/chromedriver')
+options.add_argument('--headless')    # without opening Chrome window
+
+driver = webdriver.Chrome('/Users/anna/projects-sept2020/linkedin-bot/chromedriver', options=options)
 driver.get(url)
-# sleep(3)
-# action = ActionChains(driver)
-# i = 2
-# while i <= (no_of_jobs/25): 
-#     driver.find_element_by_xpath('/html/body/main/div/section/button').click()
-#     i += 1
-#     sleep(5)
-# # parsing the visible webpage
 
 
 class infinite_scroll(object):
