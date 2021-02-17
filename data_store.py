@@ -102,11 +102,44 @@ def drop_tables():
         conn.commit()
     print('Dropped tables')
 
+def cache_hashes():
+    conn = create_connection('visited_jobs.db')
+    accepted_jobs = {}
+    not_accepted_jobs = {}
+    with conn:
+        cur1 = conn.execute('SELECT hash FROM acceptedJobs')
+        accepted_jobs = cur1.fetchall()
+        cur1 = conn.execute('SELECT hash FROM notacceptedJobs')
+        not_accepted_jobs = cur1.fetchall()
+    print('Cached hashes from both tables')
+    for j in range(len(accepted_jobs)):
+        accepted_jobs[j] = accepted_jobs[j][0]
+    for j in range(len(not_accepted_jobs)):
+        not_accepted_jobs[j] = not_accepted_jobs[j][0]
+
+    return set(accepted_jobs), set(not_accepted_jobs)
+
+def search_hash(hash, table):
+    """ checks if hash exists in the table
+        returns True if found, False if not found
+    """
+    conn = create_connection('visited_jobs.db')
+    with conn:
+        cur = conn.execute('SELECT * FROM ' + table + ' WHERE hash=?',(hash,))
+        result = cur.fetchall()
+    return len(result) > 0
+
 
 if __name__ == '__main__':
-    drop_tables()
-    create_db()
-    print_table('acceptedJobs')
-    # to_csv('acceptedJobs')
-    insert_accepted_job(('123aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink'))
-    print_table('acceptedJobs')
+    # drop_tables()
+    # create_db()
+    # print_table('acceptedJobs')
+    to_csv('acceptedJobs')
+    # insert_accepted_job(('123aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink'))
+    # insert_notaccepted_job(('hashbrown123', '01-01-2001'))
+
+    # print_table('notacceptedJobs')
+    # accepted, not_accepted = cache_hashes()
+    # print('Accepted: ', accepted)
+    # print('Not Accepted: ', not_accepted)
+    # print(search_hash('c4fce64dd68d1ee72e4b1fb00a852d31', 'acceptedJobs'))
