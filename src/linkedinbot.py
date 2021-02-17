@@ -3,14 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-from time import sleep
 from time import time
 start_time = time()
-from warnings import warn
-import pandas as pd
-import re
-import job_filter
-import hash
 import collect_data as cd
 
 # url = "https://www.linkedin.com/jobs/search/?f_E=2%2C1&f_TPR=r86400&geoId=102095887&keywords=software%20engineer&location=California%2C%20United%20States&sortBy=DD"

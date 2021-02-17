@@ -1,2 +1,8 @@
 sqlite3
-pandas
+os
+hashlib
+selenium
+re
+time
+bs4
+
