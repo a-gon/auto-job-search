@@ -4,7 +4,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from time import sleep
 from time import time
-import pandas as pd
 import job_filter as f
 import hash as h
 from os import path
