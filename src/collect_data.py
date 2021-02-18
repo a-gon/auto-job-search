@@ -1,24 +1,31 @@
 import re
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.ui import WebDriverWait
 from time import sleep
-from time import time
+from datetime import date
 import job_filter as f
 import hash as h
-from os import path
+from os.path import isfile
 import data_store as ds
 
-
-
-
 def collect_data(driver, job_container):
-    print('Getting information about {} jobs.'.format(len(job_container)))
-    job_postings = []
+    '''
+    collect_data function: receives the driver object and a container with job postings,
+    visits each job posting and collects the required data
+    avoids saving duplicate job postings into the database by hashing the job description 
+    creates the database if it does not exist yet
+    '''
+    if len(job_container) == 0:
+        raise ValueError('Job container is empty. To proceed, it must contain at least one item.')
+    if not driver:
+        raise RuntimeError('Driver object is incorrect.')
 
-    # get all job postings on the loaded page
+    print(f'Getting information about {len(job_container)} jobs.')
+
+    if not isfile('visited_jobs.db'):
+        ds.createdb()
+
+    job_postings = []
+   
     for job in job_container:
-        
         job_id = job.find('a', href=True)['href']
         job_id = re.findall(r'(?!-)([0-9]*)(?=\?)',job_id)[0]
         job_postings.append(job_id)
@@ -27,8 +34,6 @@ def collect_data(driver, job_container):
     accepted, not_accepted = 0, 0
 
     for x in range(1,len(job_postings)+1):
-        
-        # clicking on different job containers to view information about the job
         try:
             job_xpath = '/html/body/main/div/section/ul/li[{}]/img'.format(x)
             driver.find_element_by_xpath(job_xpath).click()
@@ -48,15 +53,14 @@ def collect_data(driver, job_container):
 
             job_desc = driver.find_element_by_xpath('/html/body/main/section/div[2]/section[2]/div/section/div').text
 
-            #  TODO: add date to db
-            # date_posted = driver.find_element 
-        except Exception:
-            print(Exception.args)
-            print(Exception.with_traceback)
+            date_posted = date.today().strftime("%m/%d/%y")
+        except RuntimeError as e:
+            print('Runtime error while processing a job posting')
+            print(e.args)
+            print(e.with_traceback)
 
         job_hash = h.get_hash(job_desc)
-        print(job_hash)
-        # seniority = job_criteria_container.find('span', class_='job-criteria__text job-criteria__text--criteria').text
+        # print(job_hash)
         if h.is_in_accepted(job_hash) or h.is_in_notaccepted(job_hash):
             continue
         elif f.accepted_title(title) and f.accepted_level(level) and f.accepted_description(job_desc):
@@ -66,5 +70,3 @@ def collect_data(driver, job_container):
             ds.insert_notaccepted_job((job_hash, date_posted))     
             not_accepted += 1
     print(f'Jobs accepted: {accepted}\nJobs not accepted: {not_accepted}') 
-    
-
