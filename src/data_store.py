@@ -1,9 +1,10 @@
 import sqlite3
 from sqlite3 import Error
 import pandas as pd
+from job_posting_class import Job_Posting
 
 def create_connection(db_file='visited_jobs.db'):
-    """ create a database connection to a SQLite database """
+    """ Create and return a connection to db_file SQLite database """
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -15,9 +16,10 @@ def create_connection(db_file='visited_jobs.db'):
 
 def create_table(conn, create_table_sql):
     """ create a table from the create_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
+
+    Keywork arguments:
+    conn -- connection object
+    create_table_sql -- a CREATE TABLE statement
     """
     try:
         c = conn.cursor()
@@ -41,9 +43,15 @@ def create_db():
 
                                     ); """
     sql_create_notacceptedJobs_table = """  
-                                            CREATE TABLE IF NOT EXISTS notacceptedJobs (
-                                            hash text PRIMARY KEY,
-                                            date_posted text
+                                        CREATE TABLE IF NOT EXISTS notacceptedJobs (
+                                        hash text PRIMARY KEY,
+                                        date_posted text,
+                                        title text,
+                                        company text,
+                                        location text,
+                                        level text,
+                                        description text,
+                                        link text
                                         ); """
     
     conn = create_connection('visited_jobs.db')
@@ -58,22 +66,27 @@ def create_db():
 
 
 def insert_accepted_job(job):
+    """Insert a job object as columns into the accepted table"""
+
+    job_tuple = (job.hash, job.date_posted, job.title, job.company, job.location, job.level, job.description, job.link)
     conn = create_connection('visited_jobs.db')
-    sql = ''' INSERT INTO acceptedJobs(hash, date_posted, title, company, location, level, description, link)
+    sql = ''' INSERT or IGNORE INTO acceptedJobs(hash, date_posted, title, company, location, level, description, link)
               VALUES(?,?,?,?,?,?,?,?) '''
     with conn:
         cur = conn.cursor()
-        cur.execute(sql, job)
+        cur.execute(sql, job_tuple)
         conn.commit()
         return cur.lastrowid
 
 def insert_notaccepted_job(job):
+    """Insert a job into the notaccepted table"""
+    job_tuple = (job.hash, job.date_posted, job.title, job.company, job.location, job.level, job.description, job.link)
     conn = create_connection('visited_jobs.db')
-    sql = ''' INSERT INTO notacceptedJobs(hash, date_posted)
-              VALUES(?,?) '''
+    sql = ''' INSERT or IGNORE INTO notacceptedJobs(hash, date_posted, title, company, location, level, description, link)
+              VALUES(?,?,?,?,?,?,?,?) '''
     with conn:
         cur = conn.cursor()
-        cur.execute(sql, job)
+        cur.execute(sql, job_tuple)
         conn.commit()
         return cur.lastrowid
 
@@ -126,15 +139,14 @@ def search_hash(hash, table):
     conn = create_connection('visited_jobs.db')
     with conn:
         cur = conn.execute('SELECT * FROM ' + table + ' WHERE hash=?',(hash,))
-        result = cur.fetchall()
-    return len(result) > 0
+        return len(cur.fetchall()) > 0
 
 
 if __name__ == '__main__':
     # drop_tables()
     # create_db()
     # print_table('acceptedJobs')
-    to_csv('acceptedJobs')
+    # to_csv('acceptedJobs')
     # insert_accepted_job(('123aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink'))
     # insert_notaccepted_job(('hashbrown123', '01-01-2001'))
 
@@ -142,4 +154,11 @@ if __name__ == '__main__':
     # accepted, not_accepted = cache_hashes()
     # print('Accepted: ', accepted)
     # print('Not Accepted: ', not_accepted)
-    # print(search_hash('c4fce64dd68d1ee72e4b1fb00a852d31', 'acceptedJobs'))
+    # job1 = Job_Posting('111aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink')
+    # job2 = Job_Posting('hashbrown00', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink')
+    # insert_accepted_job(job1)
+    # insert_notaccepted_job(job2)
+
+    assert search_hash('111aaa4bbb', 'acceptedJobs') == True, "Job 111aaa4bbb does not exist"
+    assert search_hash('hashbrown00', 'notacceptedJobs') == True, "Job hashbrown00 does not exist"
+
