@@ -4,5 +4,7 @@ hashlib
 selenium
 re
 time
+datetime
 bs4
+dataclasses
 
