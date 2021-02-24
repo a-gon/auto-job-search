@@ -14,24 +14,9 @@ def create_connection(db_file='visited_jobs.db'):
 
     return conn
 
-def create_table(conn, create_table_sql):
-    """ create a table from the create_table_sql statement
-
-    Keywork arguments:
-    conn -- connection object
-    create_table_sql -- a CREATE TABLE statement
-    """
-    try:
-        c = conn.cursor()
-        c.execute(create_table_sql)
-        print('Table created')
-    except Error as e:
-        print(e)
-
-
 def create_db():
-    sql_create_acceptedJobs_table = """ 
-                                        CREATE TABLE IF NOT EXISTS acceptedJobs (
+    sql_create_table = """ 
+                                        CREATE TABLE IF NOT EXISTS SeenJobs (
                                         hash text PRIMARY KEY,
                                         date_posted text,
                                         title text,
@@ -39,55 +24,43 @@ def create_db():
                                         location text,
                                         level text,
                                         description text,
-                                        link text
-
+                                        link text,
+                                        accepted int
                                     ); """
-    sql_create_notacceptedJobs_table = """  
-                                        CREATE TABLE IF NOT EXISTS notacceptedJobs (
-                                        hash text PRIMARY KEY,
-                                        date_posted text,
-                                        title text,
-                                        company text,
-                                        location text,
-                                        level text,
-                                        description text,
-                                        link text
-                                        ); """
     
     conn = create_connection('visited_jobs.db')
-    if conn is not None:
-        # create projects table
-        create_table(conn, sql_create_acceptedJobs_table)
+    with conn:
+        try: 
+            cur = conn.cursor()
+            cur.execute(sql_create_table)
+            conn.commit()
+            print('Table created')
+            # create_table(conn, sql_create_SeenJobs_table)
+        except Error as e:
+            print(f"Error while creating a table Error:\n{e}")
 
-        # create tasks table
-        create_table(conn, sql_create_notacceptedJobs_table)
-    else:
-        print("Error! cannot create the database connection.")
-
-
-def insert_accepted_job(job):
-    """Insert a job object as columns into the accepted table"""
-
-    job_tuple = (job.hash, job.date_posted, job.title, job.company, job.location, job.level, job.description, job.link)
+def drop_table():
     conn = create_connection('visited_jobs.db')
-    sql = ''' INSERT or IGNORE INTO acceptedJobs(hash, date_posted, title, company, location, level, description, link)
-              VALUES(?,?,?,?,?,?,?,?) '''
+    with conn:
+        sql1 = """ DROP TABLE IF EXISTS SeenJobs """
+        cur = conn.cursor()
+        cur.execute(sql1)
+        conn.commit()
+    print('Dropped the table')
+
+def insert_job(job):
+    """ Insert a job object as columns into the table """
+
+    job_tuple = (job.hash, job.date_posted, job.title, job.company, job.location, job.level, job.description, job.link, job.accepted)
+    conn = create_connection('visited_jobs.db')
+
+    sql = ''' INSERT or IGNORE INTO SeenJobs(hash, date_posted, title, company, location, level, description, link, accepted)
+              VALUES(?,?,?,?,?,?,?,?,?) '''
     with conn:
         cur = conn.cursor()
         cur.execute(sql, job_tuple)
         conn.commit()
-        return cur.lastrowid
-
-def insert_notaccepted_job(job):
-    """Insert a job into the notaccepted table"""
-    job_tuple = (job.hash, job.date_posted, job.title, job.company, job.location, job.level, job.description, job.link)
-    conn = create_connection('visited_jobs.db')
-    sql = ''' INSERT or IGNORE INTO notacceptedJobs(hash, date_posted, title, company, location, level, description, link)
-              VALUES(?,?,?,?,?,?,?,?) '''
-    with conn:
-        cur = conn.cursor()
-        cur.execute(sql, job_tuple)
-        conn.commit()
+        print('Inserted job')
         return cur.lastrowid
 
 def print_table(table):
@@ -99,21 +72,19 @@ def print_table(table):
     #  to print all contents of a table
     print(cur.fetchall())
 
-def to_csv(table_name):
-    with sqlite3.connect('visited_jobs.db') as db:
-        table = pd.read_sql_query('SELECT * from ' + table_name, db)
-        table.to_csv(table_name + '.csv', index_label='index')
+def to_csv(accepted=True):
+    """ Output jobs (accepted by default) into a CSV file called acceptedJobs.csv """
 
-def drop_tables():
+    sql_query = 'SELECT * FROM SeenJobs WHERE accepted=1' if accepted else 'SELECT * FROM SeenJobs WHERE accepted=0'
+    file_name = 'accepted_jobs' if accepted else 'not_accepted_jobs'
+
     conn = create_connection('visited_jobs.db')
     with conn:
-        sql1 = '''DROP TABLE IF EXISTS acceptedJobs'''
-        sql2 = '''DROP TABLE IF EXISTS notacceptedJobs'''
-        cur = conn.cursor()
-        cur.execute(sql1)
-        cur.execute(sql2)
-        conn.commit()
-    print('Dropped tables')
+        table = pd.read_sql_query(sql_query, conn)
+        table.to_csv(file_name + '.csv', index_label='index')
+        print('Exported table to CSV')
+
+
 
 def cache_hashes():
     conn = create_connection('visited_jobs.db')
@@ -132,33 +103,30 @@ def cache_hashes():
 
     return set(accepted_jobs), set(not_accepted_jobs)
 
-def search_hash(hash, table):
+def search_hash(hash):
     """ checks if hash exists in the table
         returns True if found, False if not found
     """
     conn = create_connection('visited_jobs.db')
     with conn:
-        cur = conn.execute('SELECT * FROM ' + table + ' WHERE hash=?',(hash,))
+        cur = conn.execute('SELECT * FROM SeenJobs WHERE hash=?',(hash,))
         return len(cur.fetchall()) > 0
 
 
 if __name__ == '__main__':
-    # drop_tables()
+    # drop_table()
     # create_db()
+
     # print_table('acceptedJobs')
     # to_csv('acceptedJobs')
     # insert_accepted_job(('123aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink'))
     # insert_notaccepted_job(('hashbrown123', '01-01-2001'))
 
-    # print_table('notacceptedJobs')
-    # accepted, not_accepted = cache_hashes()
-    # print('Accepted: ', accepted)
-    # print('Not Accepted: ', not_accepted)
-    # job1 = Job_Posting('111aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink')
-    # job2 = Job_Posting('hashbrown00', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink')
-    # insert_accepted_job(job1)
+    job1 = Job_Posting('111aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink', True)
+    job2 = Job_Posting('hashbrown00', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink', False)
+    insert_job(job2)
     # insert_notaccepted_job(job2)
-
-    assert search_hash('111aaa4bbb', 'acceptedJobs') == True, "Job 111aaa4bbb does not exist"
-    assert search_hash('hashbrown00', 'notacceptedJobs') == True, "Job hashbrown00 does not exist"
+    to_csv(False)
+    assert search_hash('111aaa4bbb') == True, "Job 111aaa4bbb does not exist"
+    assert search_hash('hashbrown00') == True, "Job hashbrown00 does not exist"
 
