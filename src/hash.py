@@ -21,4 +21,9 @@ def is_in_notaccepted(hash):
     """
     return ds.search_hash(hash, 'notacceptedJobs')
 
+def is_seen(hash):
+    """ Check if hash is already in the table """
+    
+    return ds.search_hash(hash)
+
 

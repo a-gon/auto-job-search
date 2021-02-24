@@ -23,16 +23,16 @@ def store_data(job_list):
 
     accepted, not_accepted = 0, 0
 
-    for job_posting in job_list:
-        job_posting.hash = h.get_hash(job_posting.description)
-        # print(job_hash)
-        if h.is_in_accepted(job_posting.hash) or h.is_in_notaccepted(job_posting.hash):
-            return
-        elif f.accepted_title(job_posting.title) and f.accepted_level(job_posting.level) and f.accepted_description(job_posting.description):
-            ds.insert_accepted_job((job_posting.hash, job_posting.date_posted, job_posting.title, job_posting.company, job_posting.location, job_posting.level, job_posting.description, job_posting.link))
+    for job in job_list:
+        job.hash = h.get_hash(job.description)
+        if h.is_seen(job.hash):
+            continue
+        elif f.accepted_title(job.title) and f.accepted_level(job.level) and f.accepted_description(job.description):
+            job.accepted = 1
+            ds.insert_job(job)
             accepted += 1
         else:
-            ds.insert_notaccepted_job((job_posting.hash, job_posting.date_posted))     
+            job.accepted = 0
+            ds.insert_job(job)
             not_accepted += 1
-
     print(f'Jobs accepted: {accepted}\nJobs not accepted: {not_accepted}') 
