@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import bs4
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,6 +8,7 @@ from time import time
 from time import sleep
 from datetime import date
 import re
+import traceback
 
 from job_posting_class import Job_Posting
 start_time = time()
@@ -50,6 +52,7 @@ def launch_driver(driver, url):
 
     job_container = lxml_soup.find('ul', class_ = 'jobs-search__results-list')
     print('Job postings found:', len(job_container))
+    # print(job_container)
     return job_container
 
 
@@ -67,25 +70,26 @@ def extract_data(driver, job_container):
 
     for i in range(1, len(job_container)+1):
         try:
-            job_xpath = f'/html/body/main/div/section/ul/li[{i}]/img'
+            job_xpath = f'/html/body/main/div/section[2]/ul/li[{i}]/img'
             driver.find_element_by_xpath(job_xpath).click()
             sleep(3)    # so that driver does not flood the page with requests
             job = Job_Posting(
-                title=driver.find_element_by_class_name('topcard__title').text,
+                hash = '',
                 title = driver.find_element_by_class_name('topcard__title').text,
-                link = driver.find_element_by_xpath('/html/body/main/section/div[2]/section/div[1]/div[1]/a').get_attribute('href'),
+                link = driver.find_element_by_xpath("//a[@data-tracking-control-name='public_jobs_topcard_title']").get_attribute('href'),
                 company = driver.find_element_by_class_name('topcard__flavor').text,
                 location = driver.find_element_by_class_name('topcard__flavor--bullet').text,
-                level = driver.find_element_by_xpath('/html/body/main/section/div[2]/section[2]/ul/li[1]/span').text,
-                description = driver.find_element_by_xpath('/html/body/main/section/div[2]/section[2]/div/section/div').text,
-                date_posted = date.today().strftime("%m/%d/%y")
+                level = driver.find_element_by_class_name('job-criteria__text--criteria').text,
+                description = driver.find_element_by_class_name('description__text--rich').text,
+                date_posted = date.today().strftime("%m/%d/%y"),
+                accepted = 0
             )
+
             job_list.append(job)
 
-        except Exception as e:
-            print('Runtime error while processing a job posting')
-            print(e.args)
-            print(e.with_traceback)
+        except Exception:
+            print(f'Runtime error while processing a job posting')
+            print(traceback.format_exc())
 
     return job_list
 
@@ -93,18 +97,19 @@ def extract_data(driver, job_container):
 if __name__ == "__main__":
     # SEARCH_POSITION
     # SEARCH_LOCATION
-    # HEADLESS = True
-    url = 'https://www.linkedin.com/jobs/search/?f_TPR=r86400&geoId=102095887&keywords=software%20engineer&location=California%2C%20United%20States&sortBy=DD&redirect=false&position=1&pageNum=0&f_TP=1%2C2'
+    HEADLESS = True    # TODO: add this as kwargs
+    url = 'https://www.linkedin.com/jobs/search/?f_TP=1%2C2&f_TPR=r86400&geoId=102095887&keywords=software%20engineer&location=California%2C%20United%20States&sortBy=R'
     options = Options()
-    options.add_argument('--headless')
+    if HEADLESS:
+        options.add_argument('--headless')
     driver = webdriver.Chrome('src/chromedriver', options=options)
 
     job_container = launch_driver(driver, url)
     job_list = extract_data(driver, job_container)
     
     store_data(job_list)
-    to_csv('acceptedJobs')
-    to_csv('notacceptedJobs')
+    to_csv(True)        # output accepted jobs to csv file
+    to_csv(False)       # output not accepted jobs into csv file
     driver.quit()       # closes all windows, release resources
 
 
