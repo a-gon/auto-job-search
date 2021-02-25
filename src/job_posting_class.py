@@ -11,4 +11,4 @@ class Job_Posting:
     location: str
     level: str
     description: str
-    accepted: int
+    accepted: bool

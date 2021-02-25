@@ -51,7 +51,7 @@ def drop_table():
 def insert_job(job):
     """ Insert a job object as columns into the table """
 
-    job_tuple = (job.hash, job.date_posted, job.title, job.company, job.location, job.level, job.description, job.link, job.accepted)
+    job_tuple = (job.hash, job.date_posted, job.title, job.company, job.location, job.level, job.description, job.link, int(job.accepted))
     conn = create_connection('visited_jobs.db')
 
     sql = ''' INSERT or IGNORE INTO SeenJobs(hash, date_posted, title, company, location, level, description, link, accepted)
@@ -60,7 +60,7 @@ def insert_job(job):
         cur = conn.cursor()
         cur.execute(sql, job_tuple)
         conn.commit()
-        print('Inserted job')
+        # print('Inserted job')
         return cur.lastrowid
 
 def print_table(table):
@@ -83,8 +83,6 @@ def to_csv(accepted=True):
         table = pd.read_sql_query(sql_query, conn)
         table.to_csv(file_name + '.csv', index_label='index')
         print('Exported table to CSV')
-
-
 
 def cache_hashes():
     conn = create_connection('visited_jobs.db')
@@ -117,16 +115,12 @@ if __name__ == '__main__':
     # drop_table()
     # create_db()
 
-    # print_table('acceptedJobs')
-    # to_csv('acceptedJobs')
-    # insert_accepted_job(('123aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink'))
-    # insert_notaccepted_job(('hashbrown123', '01-01-2001'))
-
-    job1 = Job_Posting('111aaa4bbb', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink', True)
+    job1 = Job_Posting('12345', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink', True)
     job2 = Job_Posting('hashbrown00', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink', False)
-    insert_job(job2)
-    # insert_notaccepted_job(job2)
-    to_csv(False)
-    assert search_hash('111aaa4bbb') == True, "Job 111aaa4bbb does not exist"
+    insert_job(job1)
+
+    to_csv()
+
+    assert search_hash('12345') == True, "Job 12345 does not exist"
     assert search_hash('hashbrown00') == True, "Job hashbrown00 does not exist"
 

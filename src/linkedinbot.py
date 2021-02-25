@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import bs4
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,7 +6,6 @@ from selenium.webdriver.chrome.options import Options
 from time import time
 from time import sleep
 from datetime import date
-import re
 import traceback
 
 from job_posting_class import Job_Posting
@@ -82,7 +80,7 @@ def extract_data(driver, job_container):
                 level = driver.find_element_by_class_name('job-criteria__text--criteria').text,
                 description = driver.find_element_by_class_name('description__text--rich').text,
                 date_posted = date.today().strftime("%m/%d/%y"),
-                accepted = 0
+                accepted = False
             )
 
             job_list.append(job)

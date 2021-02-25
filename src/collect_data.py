@@ -28,11 +28,11 @@ def store_data(job_list):
         if h.is_seen(job.hash):
             continue
         elif f.accepted_title(job.title) and f.accepted_level(job.level) and f.accepted_description(job.description):
-            job.accepted = 1
+            job.accepted = True
             ds.insert_job(job)
             accepted += 1
         else:
-            job.accepted = 0
+            job.accepted = False
             ds.insert_job(job)
             not_accepted += 1
     print(f'Jobs accepted: {accepted}\nJobs not accepted: {not_accepted}') 
