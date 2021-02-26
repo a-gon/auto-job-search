@@ -6,9 +6,10 @@ def accepted_title(title):
     """
     unaccepted = {'staff', 'senior', 'test', 'fullstack', 'full stack', 'webdev', 'web dev', \
         'web developer', 'front end', 'frontend', 'analyst', 'embedded', 'lead', 'hardware', \
-            'principal', 'sr.', 'c++', 'ruby', 'java', 'phd', 'postgraduate'}
-    accepted = {'software engineer', 'software developer', 'swe', 'junior developer', 'developer', 'software', 'engineer',
-    'software development engineer', 'machine learning', 'ml engineer', 'backend engineer', 'new grad', 'recent'}
+            'principal', 'sr.', 'c++', 'ruby', 'java', 'phd', 'postgraduate', 'node'}
+    accepted = {'software engineer', 'software developer', 'swe', 'junior developer', 'developer',\
+         'software', 'engineer', 'software development engineer', 'machine learning', 'ml engineer', \
+            'backend engineer', 'new grad', 'recent'}
 
     if any(w in title.lower() for w in unaccepted):
         return False
