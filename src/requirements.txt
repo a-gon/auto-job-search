@@ -1,10 +1,6 @@
-sqlite3
-os
-hashlib
-selenium
-re
-time
-datetime
 bs4
-dataclasses
+lxml
+pandas
+selenium
+
 
