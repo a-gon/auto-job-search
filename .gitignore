@@ -1,5 +1,8 @@
 __pycache__
 *.json
 *.csv
-*.db
+*/**.db
 *.DS_Store
+.venv
+.vscode
+mypytho3.7venv
