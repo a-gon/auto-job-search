@@ -115,12 +115,11 @@ if __name__ == '__main__':
     # drop_table()
     # create_db()
 
-    job1 = Job_Posting('12345', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink', True)
-    job2 = Job_Posting('hashbrown00', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'joonior', 'bla-bla-bla', 'httplink', False)
+    job1 = Job_Posting('12345', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'junior', 'long description', 'httplink', True)
+    job2 = Job_Posting('64737227', '01-01-2001', 'software engineer', 'amazon', 'San Francisco,CA', 'associate', 'long description', 'httplink', False)
     insert_job(job1)
-
-    to_csv()
+    insert_job(job2)
 
     assert search_hash('12345') == True, "Job 12345 does not exist"
-    assert search_hash('hashbrown00') == True, "Job hashbrown00 does not exist"
+    assert search_hash('64737227') == True, "Job 64737227 does not exist"
 
