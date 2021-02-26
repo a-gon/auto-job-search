@@ -22,7 +22,7 @@ What is stored in the database: hash, title, company, location, description, lin
 
 At the moment, to run the bot you need to do the following:
 
-- make sure you have python 3.7 (to check `which python3`)
+- make sure you have python 3.7 (to check `python --version`)
 - install all dependencies: `pip install -r src/requirements.txt`
 - install Google Chrome if don't already have it or add `options.setBinary("/path/to/chrome/binary")` to chromedriver options in main of **linkedinbot.py**
 - install chromedriver into src directory:
