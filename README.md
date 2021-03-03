@@ -34,6 +34,6 @@ At the moment, to run the bot you need to do the following:
 
 Upcoming updates will include:
 
-- [ ] Handling search parameters as key arguments.
+- [x] Handling search parameters as key arguments.
 - [ ] Containerization with Docker
 - [ ] Setting up a schedule to run the bot
