@@ -85,10 +85,13 @@ def extract_data(driver, job_container):
                 company = driver.find_element_by_class_name('topcard__flavor').text,
                 location = driver.find_element_by_class_name('topcard__flavor--bullet').text,
                 level = driver.find_element_by_class_name('job-criteria__text--criteria').text,
-                description = driver.find_element_by_class_name('description__text--rich').text,
+                description = "",
                 date_posted = datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                 accepted = False
             )
+            driver.find_element_by_class_name('show-more-less-html__button--more').click()
+            sleep(1)
+            job.description = driver.find_element_by_class_name('show-more-less-html__markup').text
 
             job_list.append(job)
 
@@ -108,7 +111,6 @@ def create_url(url, params):
 
 
 if __name__ == "__main__":
-    print(len(sys.argv))
     SEARCH_POSITION = sys.argv[1]
     SEARCH_LOCATION = sys.argv[2]
     HEADLESS = True         # do not open Chrome 
