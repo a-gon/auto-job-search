@@ -29,8 +29,8 @@ At the moment, to run the bot you need to do the following:
   - <https://sites.google.com/a/chromium.org/chromedriver/downloads>
 - copy and paste your LinkedIn search results page URL in main of **linkedinbot.py**
 - alter filters to make them relevant to your search in **job_filters.py**
-- execute **linkedinbot.py** (this will take a few minutes)
-  - `$ python3 linkedinbot.py`
+- execute **linkedinbot.py** with your own search parameters (this will take a few minutes)
+  - `$ python3 linkedinbot.py <"Software Engineer"> <"California, United States">`
 
 Upcoming updates will include:
 
