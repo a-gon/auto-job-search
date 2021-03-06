@@ -20,14 +20,12 @@ What is stored in the database: hash, title, company, location, description, lin
 
 ## Installation and launch
 
-At the moment, to run the bot you need to do the following:
+At the moment, to run the bot on your machine you need to do the following:
 
 - make sure you have python 3.7 (to check `python --version`)
 - install all dependencies: `pip install -r requirements.txt`
-- install Google Chrome if don't already have it or add `options.setBinary("/path/to/chrome/binary")` to chromedriver options in main of **linkedinbot.py**
-- install chromedriver into src directory if it's not working with the one provided:
-  - <https://sites.google.com/a/chromium.org/chromedriver/downloads>
-- copy and paste your LinkedIn search results page URL in main of **linkedinbot.py**
+- install chromedriver: `brew install chromedriver`
+  - if you have Google Chrome browser on your machine make sure it's updated to the latest version
 - alter filters to make them relevant to your search in **job_filters.py**
 - execute **linkedinbot.py** with your own search parameters (this will take a few minutes)
   - `$ python3 linkedinbot.py <"Software Engineer"> <"California, United States">`
@@ -35,5 +33,6 @@ At the moment, to run the bot you need to do the following:
 Upcoming updates will include:
 
 - [x] Handling search parameters as key arguments.
-- [ ] Containerization with Docker
+- [x] Containerization with Docker
+- [ ] Extraction of data from a container
 - [ ] Setting up a schedule to run the bot
