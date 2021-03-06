@@ -113,7 +113,7 @@ def create_url(url, params):
 if __name__ == "__main__":
     SEARCH_POSITION = sys.argv[1]
     SEARCH_LOCATION = sys.argv[2]
-    HEADLESS = True         # do not open Chrome 
+    HEADLESS = True         # do not open Chrome
     url = create_url('https://www.linkedin.com/jobs/search/?', [SEARCH_POSITION, SEARCH_LOCATION])
     # url = 'https://www.linkedin.com/jobs/search/?f_TP=1%2C2&f_TPR=r86400&keywords=software%20engineer&location=California%2C%20United%20States&sortBy=R'
 
@@ -121,7 +121,10 @@ if __name__ == "__main__":
     options = Options()
     if HEADLESS:
         options.add_argument('--headless')
-    driver = webdriver.Chrome('src/chromedriver', options=options)
+    options.add_argument('--no-sandbox')
+    options.add_argument("--disable-setuid-sandbox")
+
+    driver = webdriver.Chrome(options=options)
 
     job_container = launch_driver(driver, url)
     job_list = extract_data(driver, job_container)
