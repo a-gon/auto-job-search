@@ -4,6 +4,8 @@ Looking through endless job postings can be daunting, and even if you apply seve
 
 This bot collects job postings that correspond to your preferences and outputs them into a .csv file so you can spend more time on applications that you are actually interested in.
 
+This could also be used as a tutorial on how to set up and run a small app with Docker, use persistent storage, and deploy to the cloud.
+
 ___
 **NOTE**
 
@@ -30,9 +32,15 @@ At the moment, to run the bot on your machine you need to do the following:
 - execute **linkedinbot.py** with your own search parameters (this will take a few minutes)
   - `$ python3 linkedinbot.py <"Software Engineer"> <"California, United States">`
 
+Using Docker:
+
+- Get Docker: <https://docs.docker.com/get-docker/>
+- Build an image: `docker build -t job-search-bot .`
+- launch the container in foreground (allows to see progress): `docker run -it job-search-bot` or omit -it to only get the end result or `docker run -v bot-db:/data bot-with-volume`
+
 Upcoming updates will include:
 
 - [x] Handling search parameters as key arguments.
 - [x] Containerization with Docker
-- [ ] Extraction of data from a container
-- [ ] Setting up a schedule to run the bot
+- [x] Persistent storage (locally)
+- [ ] Deploying the bot to the cloud (Azure)
