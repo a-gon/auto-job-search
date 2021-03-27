@@ -60,7 +60,7 @@ def launch_driver(driver, url):
     return job_container
 
 
-def extract_data(driver, job_container):
+def extract_data(driver, job_container, test=False):
     """ Extract data from job_container and return a list of Job_Posting objects
 
     Arguments:
@@ -72,7 +72,8 @@ def extract_data(driver, job_container):
     
     job_list = []
     errors = 0
-    for i in range(1, len(job_container)+1):
+    num_jobs = len(job_container)+1 if not test else 5
+    for i in range(1, num_jobs):
         try:
             job_xpath = f'/html/body/main/div/section[2]/ul/li[{i}]/img'
             driver.find_element_by_xpath(job_xpath).click()
@@ -114,6 +115,7 @@ if __name__ == "__main__":
     SEARCH_POSITION = sys.argv[1]
     SEARCH_LOCATION = sys.argv[2]
     HEADLESS = True         # do not open Chrome
+    TEST = True             # extract only 5 jobs to test 
     url = create_url('https://www.linkedin.com/jobs/search/?', [SEARCH_POSITION, SEARCH_LOCATION])
     # url = 'https://www.linkedin.com/jobs/search/?f_TP=1%2C2&f_TPR=r86400&keywords=software%20engineer&location=California%2C%20United%20States&sortBy=R'
 
@@ -127,7 +129,10 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(options=options)
 
     job_container = launch_driver(driver, url)
-    job_list = extract_data(driver, job_container)
+    if TEST:
+        job_list = extract_data(driver, job_container, True)
+    else:
+        job_list = extract_data(driver, job_container)
     
     store_data(job_list)
     to_csv(True)        # output accepted jobs to csv file
