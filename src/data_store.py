@@ -3,6 +3,7 @@ from sqlite3 import Error
 import pandas as pd
 from job_posting_class import Job_Posting
 import os
+import datetime
 ROOT = 'data'
 
 def create_connection(db_file='data/visited_jobs.db'):
@@ -83,7 +84,7 @@ def to_csv(accepted=True):
     conn = create_connection()
     with conn:
         table = pd.read_sql_query(sql_query, conn)
-        file = os.path.join(ROOT, file_name + '.csv')
+        file = os.path.join(ROOT, file_name + datetime.datetime.now().strftime("_%Y-%m-%d_%H:%M") + '.csv')
         table.to_csv(file, index_label='index')
 
         print('Exported table to CSV')
