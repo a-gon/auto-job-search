@@ -35,8 +35,13 @@ At the moment, to run the bot on your machine you need to do the following:
 Using Docker:
 
 - Get Docker: <https://docs.docker.com/get-docker/>
-- Build an image: `docker build -t job-search-bot .`
-- launch the container in foreground (allows to see progress): `docker run -it job-search-bot` or omit -it to only get the end result or `docker run -v bot-db:/data bot-with-volume`
+- Build an image: `docker build -t job-bot .`
+- Start a container with persistent storage: `docker run -v datavolume:/data --name mybot job-bot`
+  - Here, 'datavolume' is the name of volume, when run for the first time, it will be created. '/data' is the location of database within the container.
+  - The database will persist between container launches.
+  - 'mybot' is the container name, so if you're starting a new container with the same command, first, remove the old container with `docker rm mybot`
+- To get the resulting csv files from the container to your local machine: `docker cp mybot:/data/csv ./data` where 'mybot' is the container name
+- Tip: for getting inside your container: `docker run --entrypoint /bin/bash -it -v datavolume:/data job-bot` where 'job-bot' is image name. This is helpful for exploring the file system of the container.
 
 Upcoming updates will include:
 
