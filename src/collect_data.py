@@ -20,9 +20,11 @@ def store_data(job_list):
     if not job_list:
         raise ValueError('Job list is empty. To proceed, it must contain at least one item.')
     
-    if not isfile('data/visited_jobs.db'):
+    if not isfile('/data/visited_jobs.db'):
+        print('DB not found')
         ds.create_db()
 
+    
     accepted, not_accepted = 0, 0
 
     for job in job_list:
