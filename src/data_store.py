@@ -4,13 +4,14 @@ import pandas as pd
 from job_posting_class import Job_Posting
 import os
 import datetime
-ROOT = 'data'
+DATA_PATH = '/data'
+CSV_PATH = '/data/csv'
 
-def create_connection(db_file='data/visited_jobs.db'):
+def create_connection():
     """ Create and return a connection to db_file SQLite database """
     conn = None
     try:
-        conn = sqlite3.connect(db_file)
+        conn = sqlite3.connect(os.path.join(DATA_PATH,"visited_jobs.db"))
         return conn
     except Error as e:
         print(e)
@@ -38,7 +39,6 @@ def create_db():
             cur.execute(sql_create_table)
             conn.commit()
             print('Table created')
-            # create_table(conn, sql_create_SeenJobs_table)
         except Error as e:
             print(f"Error while creating a table Error:\n{e}")
 
@@ -84,7 +84,9 @@ def to_csv(accepted=True):
     conn = create_connection()
     with conn:
         table = pd.read_sql_query(sql_query, conn)
-        file = os.path.join(ROOT, file_name + datetime.datetime.now().strftime("_%Y-%m-%d_%H:%M") + '.csv')
+        if not os.path.exists(CSV_PATH):
+            os.mkdir(CSV_PATH)
+        file = os.path.join(CSV_PATH, file_name + datetime.datetime.now().strftime("_%Y-%m-%d_%H:%M") + '.csv')
         table.to_csv(file, index_label='index')
 
         print('Exported table to CSV')
