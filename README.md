@@ -1,10 +1,8 @@
 # Job Search Bot for LinkedIn
 
-Looking through endless job postings can be daunting, and even if you apply several filters they may filter out the jobs that may be intetesting to you or not be strict enough.
+This is a bot that collects job postings that correspond to your preferences and outputs them into a .csv file.
 
-This bot collects job postings that correspond to your preferences and outputs them into a .csv file so you can spend more time on applications that you are actually interested in.
-
-This could also be used as a tutorial on how to set up and run a small app with Docker, use persistent storage, and deploy to the cloud.
+This could also be used as a tutorial on how to set up and run a small app with Docker and use persistent storage.
 
 ___
 **NOTE**
@@ -37,10 +35,11 @@ Using Docker:
 - Get Docker: <https://docs.docker.com/get-docker/>
 - Build an image: `docker build -t job-bot .`
 - Start a container with persistent storage: `docker run -v datavolume:/data --name mybot job-bot`
-  - Here, 'datavolume' is the name of volume, when run for the first time, it will be created. '/data' is the location of database within the container.
+  - Here, 'job-bot' is an image name.
+  - 'datavolume' is the name of volume, when run for the first time, it will be created automatically. '/data' is the location of database within the container.
   - The database will persist between container launches.
   - 'mybot' is the container name, so if you're starting a new container with the same command, first, remove the old container with `docker rm mybot`
-- To get the resulting csv files from the container to your local machine: `docker cp mybot:/data/csv ./data` where 'mybot' is the container name
+- To get the resulting csv files from the container to your local machine: `docker cp mybot:/data/csv ./data` after the container finishes, where 'mybot' is the container name.
 - Tip: for getting inside your container: `docker run --entrypoint /bin/bash -it -v datavolume:/data job-bot` where 'job-bot' is image name. This is helpful for exploring the file system of the container.
 
 Upcoming updates will include:
