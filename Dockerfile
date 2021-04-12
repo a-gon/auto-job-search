@@ -31,7 +31,7 @@ ENV PATH $CHROMEDRIVER_DIR:$PATH:
 # Bundle app source
 COPY src /app
 
-CMD [ "python", "linkedinbot.py", "Software Engineer", "California, United States" ]
-
+# CMD [ "python", "linkedinbot.py", "Software Engineer", "California, United States" ]
+CMD [ "python", "linkedinbot.py"]
 
 
