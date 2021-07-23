@@ -1,15 +1,9 @@
 # Job Search Bot for LinkedIn
 
-This is a bot that collects job postings that correspond to your preferences and outputs them into a .csv file.
+This is a scraper bot that collects job postings that correspond to your preferences and outputs them into a .csv file.
 
-This could also be used as a tutorial on how to set up and run a small app with Docker and use persistent storage.
+This could also be used as a tutorial on how to set up and run a small app with Docker and use persistent storage with it.
 
-___
-**NOTE**
-
-This is a small personal project for automating a repetitive task for time saving purposes and is not intended for large-scale web scraping.  
-Anyone is welcome to use it.
-___
 
 ## How it works
 
