@@ -24,11 +24,12 @@ At the moment, to run the bot on your machine you need to do the following:
 
 - make sure you have python 3.7 (to check `python --version`)
 - install all dependencies: `pip install -r requirements.txt`
-- install chromedriver: `brew install chromedriver`
+- install chromedriver: cd into /src, `brew install chromedriver`
   - if you have Google Chrome browser on your machine make sure it's updated to the latest version
 - alter filters to make them relevant to your search in **job_filters.py**
 - execute **linkedinbot.py** with your own search parameters (this will take a few minutes)
   - `$ python3 linkedinbot.py <"Software Engineer"> <"California, United States">`
+  - or without search parameters, then you'll need to paste the search url into **linkedinbot.py** (main method)
 
 Using Docker:
 
@@ -42,9 +43,8 @@ Using Docker:
 - To get the resulting csv files from the container to your local machine: `docker cp mybot:/data/csv ./data` after the container finishes, where 'mybot' is the container name.
 - Tip: for getting inside your container: `docker run --entrypoint /bin/bash -it -v datavolume:/data job-bot` where 'job-bot' is image name. This is helpful for exploring the file system of the container.
 
-Upcoming updates will include:
+Updates introduced:
 
 - [x] Handling search parameters as key arguments.
 - [x] Containerization with Docker
 - [x] Persistent storage (locally)
-- [ ] Deploying the bot to the cloud (Azure)

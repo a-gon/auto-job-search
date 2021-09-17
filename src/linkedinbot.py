@@ -78,7 +78,7 @@ def extract_data(driver, job_container, test=False):
             job_xpath = f'/html/body/main/div/section[2]/ul/li[{i}]/img'
             driver.find_element_by_xpath(job_xpath).click()
             
-            sleep(3)    # wait for all components to get loaded after clicking
+            sleep(5)    # wait for all components to get loaded after clicking
             job = Job_Posting(
                 hash = '',
                 title = driver.find_element_by_class_name('topcard__title').text,
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         url = create_url('https://www.linkedin.com/jobs/search/?', [SEARCH_POSITION, SEARCH_LOCATION])
     else:
         """ Copy and paste url - this one enables only job postings from certain companies within the past week """
-        url = 'https://www.linkedin.com/jobs/search/?f_C=1815218%2C2620735%2C162479%2C96622%2C7594728%2C206993%2C3185%2C22688%2C3477522%2C10667%2C1337%2C1666%2C1586%2C1035%2C1441&geoId=103644278&keywords=software%20engineer&location=United%20States&f_TPR=r604800&position=1&pageNum=0'
+        url = 'https://www.linkedin.com/jobs/search/?f_TPR=a1631697980-&f_WRA=true&geoId=103644278&keywords=software%20engineer%20-senior%20-fullstack%20-manager%20-sr%20-staff%20-frontend%20-web%20-front%20-principal%20-test%20-full%20-front%20-lead&location=United%20States&sortBy=DD'
 
 
     """ Set HEADLESS = True to avoid opening Chrome browser window """
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     job_container = launch_driver(driver, url)
 
     """ Enable or disable TEST - if True, extracts only 5 jobs to test """
-    TEST = True 
+    TEST = False 
     """ Extract all jobs from the job container """
     job_list = extract_data(driver, job_container, TEST)
     

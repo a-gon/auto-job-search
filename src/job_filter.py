@@ -34,7 +34,7 @@ def accepted_description(description):
 
     unaccepted -- list of keywords that make job description unacceptable
     """
-    unaccepted = {'3+', '2+', '4+', '5+', '6+', '3 years', '4 years', '5 years',\
+    unaccepted = {'3+', '2+', '4+', '5+', '6+', '8+', '7+', '3 years', '4 years', '5 years',\
         '3 or more years', '4 or more years', '5 or more years'}
 
     if any(w in description.lower() for w in unaccepted):

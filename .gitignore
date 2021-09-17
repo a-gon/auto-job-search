@@ -7,3 +7,7 @@ __pycache__
 .vscode
 mypytho3.7venv
 *.log
+
+# to find volumes stored in the VM
+# docker run -it --privileged --pid=host debian nsenter -t 1 -m -u -n -i sh
+# cd /var/lib/docker/volumes/
